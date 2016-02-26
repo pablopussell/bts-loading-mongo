@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-file="http://www.springframework.org/schema/integration/file"
+	xmlns:int-mongodb="http://www.springframework.org/schema/integration/mongodb"
+	xmlns:int-zip="http://www.springframework.org/schema/integration/zip"
+	xmlns:task="http://www.springframework.org/schema/task" xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd
+						http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+						http://www.springframework.org/schema/integration/mongodb http://www.springframework.org/schema/integration/mongodb/spring-integration-mongodb.xsd
+						http://www.springframework.org/schema/integration/zip http://www.springframework.org/schema/integration/zip/spring-integration-zip.xsd
+						http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+						http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
+
+	
+	<!-- GO TO : https://gist.github.com/djkram/e846ac38fed4f8231cdd -->
+	
+	<int-file:inbound-channel-adapter id="filesInChannel"
+		directory="${in.file.path}">
+		<int:poller id="poller" fixed-rate="100" task-executor="executor" />
+	</int-file:inbound-channel-adapter>
+	<!-- Thread pool -->
+	<task:executor id="executor" pool-size="10" />
+
+	<!-- Filter .json -->
+	<int:filter input-channel="filesInChannel" output-channel="jsonInChannel"
+		expression="payload.getName().substring(payload.getName().lastIndexOf('.')).equals('.json')" />
+		
+	<!-- REMOVE THIS IN STEP 2 -->
+	<int:logging-channel-adapter id="jsonInChannel"
+		level="INFO" />
+	<!-- Appears file names on the console ??? -->
+	
+
+	<!-- PASTE HERE: Step 2: Message Splitter -->
+	<!-- Appears tweets on the console ??? -->
+
+	
+	<!-- PASTE HERE: Step 3: MongoDB Loading -->
+	<!-- Tweets have been loaded on MongoDB ??? -->
+
+</beans>
